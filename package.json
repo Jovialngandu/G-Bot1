@@ -12,7 +12,10 @@
   "type": "module",
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "@mozilla/readability": "^0.6.0",
+    "axios": "^1.16.1",
     "dotenv": "^17.2.1",
+    "jsdom": "^29.1.1",
     "node-fetch": "^3.3.2",
     "telegraf": "^4.16.3"
   }
