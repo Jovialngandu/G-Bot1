@@ -1,43 +1,14 @@
-import { config } from "dotenv";
-import { Telegraf } from "telegraf";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { Telegraf } from 'telegraf';
+import { config } from './src/config/env.js';
+import { handleTextMessage } from './src/handlers/textHandler.js';
 
-// Charger les variables depuis le fichier .env
-config();
+const bot = new Telegraf(config.botToken);
 
-// 🔐 API keys
-const BOT_TOKEN = process.env.BOT_TOKEN;
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+bot.on('text', handleTextMessage);
 
-// Initialisation des services
-const bot = new Telegraf(BOT_TOKEN);
-const ai = new GoogleGenerativeAI(GEMINI_API_KEY);
-const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" }); // Tu peux changer en gemini-pro si besoin
+bot.launch()
+    .then(() => console.log("🚀 Bot Telegram Gemini prêt et correctement structuré !"))
+    .catch((err) => console.error("Erreur au démarrage du bot:", err));
 
-// Commande /start
-bot.start((ctx) => {
-  ctx.reply("👋 Salut ! Envoie-moi un message et je te répondrai avec Gemini.");
-});
-
-// Gestion des messages texte
-bot.on("text", async (ctx) => {
-  const userMessage = ctx.message.text;
-  const userId = ctx.from.id;
-
-  console.log(`[${userId}] > ${userMessage}`);
-
-  try {
-    const result = await model.generateContent(userMessage);
-    const response = await result.response;
-    const text = response.text();
-
-    ctx.reply(text);
-  } catch (error) {
-    console.error("Erreur Gemini :", error.message);
-    ctx.reply("❌ Erreur lors de l’appel à Gemini.");
-  }
-});
-
-// Lancer le bot
-bot.launch();
-console.log("🤖 Bot lancé avec Gemini 1.5 Flash !");
+process.once('SIGINT', () => bot.stop('SIGINT'));
+process.once('SIGTERM', () => bot.stop('SIGTERM'));
