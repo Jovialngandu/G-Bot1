@@ -10,7 +10,7 @@ const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash' });
  * @returns {Promise<string>}
  */
 export async function genererResume(texteArticle) {
-    const prompt = `Agis comme un assistant de veille . Fais un résumé clair et structuré en 3 points clés de l'article suivant :\n\n${texteArticle}`;
+    const prompt = `Agis comme un assistant de veille .Ne salue pas dans la reponse, et soit fidèle à toi meme pour la taille du résumé. Fais un résumé clair et structuré en 3 points clés de l'article suivant :\n\n${texteArticle}`;
     
     const result = await model.generateContent(prompt);
     return result.response.text();
